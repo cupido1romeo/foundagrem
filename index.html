@@ -1,0 +1,352 @@
+<!DOCTYPE html>
+<html lang="en">
+
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <meta name="description" content="Legal Question Tracker for Rommaana — Organize and compare lawyer consultations">
+  <title>Rommaana — Legal Defense Tracker</title>
+  <link rel="stylesheet" href="index.css">
+</head>
+
+<body>
+  <div class="app-container">
+    <!-- Mobile hamburger -->
+    <button class="hamburger" id="hamburger" aria-label="Toggle menu">☰</button>
+    <div class="sidebar-overlay" id="sidebarOverlay"></div>
+
+    <!-- Sidebar -->
+    <aside class="sidebar" id="sidebar">
+      <div class="sidebar-header">
+        <div class="sidebar-logo">
+          <div class="logo-icon">⚖️</div>
+          <div>
+            <h1 data-i18n="sidebarTitle">Rommaana</h1>
+            <span class="subtitle" data-i18n="sidebarSubtitle">Legal Defense Tracker</span>
+          </div>
+        </div>
+        <button class="lang-toggle" id="langToggle" aria-label="Switch language">عربي</button>
+      </div>
+      <nav class="sidebar-nav">
+        <div class="nav-section-label" data-i18n="navOverview">Overview</div>
+        <div class="nav-item active" data-view="dashboard" id="nav-dashboard">
+          <span class="nav-icon">📊</span> <span data-i18n="navDashboard">Dashboard</span>
+        </div>
+        <div class="nav-item" data-view="lawyers" id="nav-lawyers">
+          <span class="nav-icon">👨‍⚖️</span> <span data-i18n="navLawyers">Lawyers</span>
+          <span class="nav-badge" id="lawyerCount">0</span>
+        </div>
+        <div class="nav-item" data-view="documents" id="nav-documents">
+          <span class="nav-icon">📄</span> <span data-i18n="navDocuments">Documents</span>
+        </div>
+        <div class="nav-item" data-view="documentation" id="nav-documentation">
+          <span class="nav-icon">📚</span> <span data-i18n="navDocumentation">Documentation</span>
+        </div>
+        <div class="nav-item" data-view="compare" id="nav-compare">
+          <span class="nav-icon">⚖️</span> <span data-i18n="navCompare">Compare Answers</span>
+        </div>
+
+        <div class="nav-section-label" data-i18n="navRedFlags">Red Flags</div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="vesting" id="nav-pp-vesting">
+          <span class="nav-icon">📅</span> <span data-i18n="navVesting">Vesting Start</span>
+        </div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="article80" id="nav-pp-article80">
+          <span class="nav-icon">💀</span> <span data-i18n="navArticle80">Article 80 Trap</span>
+        </div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="fakedebt" id="nav-pp-fakedebt">
+          <span class="nav-icon">💰</span> <span data-i18n="navFakeDebt">Fake Debt</span>
+        </div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="nominal" id="nav-pp-nominal">
+          <span class="nav-icon">🪙</span> <span data-i18n="navNominal">Nominal Value</span>
+        </div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="cureperiod" id="nav-pp-cureperiod">
+          <span class="nav-icon">⏰</span> <span data-i18n="navCurePeriod">10-Day Cure</span>
+        </div>
+        <div class="nav-item" data-view="painpoint" data-painpoint="spanish" id="nav-pp-spanish">
+          <span class="nav-icon">🇪🇸</span> <span data-i18n="navSpanish">Spanish Amendment</span>
+        </div>
+
+
+        <div class="nav-section-label">User</div>
+        <div class="nav-item" id="nav-logout">
+          <span class="nav-icon">🚪</span> <span>Logout</span>
+        </div>
+      </nav>
+    </aside>
+
+    <!-- Main Content -->
+    <main class="main-content">
+      <!-- ===== DASHBOARD ===== -->
+      <section class="view-section active" id="view-dashboard">
+        <div class="page-header">
+          <h2 data-i18n="dashboardTitle">Defense Dashboard</h2>
+          <p data-i18n="dashboardDesc">Track the 6 red flags in Gustavo's Founders Agreement draft. Get each confirmed
+            as "Non-Standard" by your lawyers.</p>
+        </div>
+
+        <div class="stats-bar" id="dashboardStats"></div>
+        <div class="cards-grid" id="painpointCards"></div>
+      </section>
+
+      <!-- ===== LAWYERS ===== -->
+      <section class="view-section" id="view-lawyers">
+        <div class="page-header flex-between">
+          <div>
+            <h2 data-i18n="lawyersTitle">Lawyers</h2>
+            <p data-i18n="lawyersDesc">Manage your legal consultants. Compare their responses across all questions.</p>
+          </div>
+          <button class="btn btn-primary" id="addLawyerBtn" data-i18n="addLawyerBtn">+ Add Lawyer</button>
+        </div>
+        <div class="cards-grid" id="lawyerCards"></div>
+        <div class="empty-state hidden" id="lawyerEmptyState">
+          <div class="empty-icon">👨‍⚖️</div>
+          <h3 data-i18n="noLawyersTitle">No lawyers added yet</h3>
+          <p data-i18n="noLawyersDesc">Add your first lawyer to start tracking consultations.</p>
+          <button class="btn btn-primary" id="addLawyerBtn2" data-i18n="addLawyerBtn">+ Add Lawyer</button>
+        </div>
+      </section>
+
+      <!-- ===== DOCUMENTATION ===== -->
+      <section class="view-section" id="view-documentation">
+        <div class="page-header">
+          <h2 data-i18n="docLibraryTitle">Documentation Library</h2>
+          <p style="color:var(--text-secondary);">Access key documents and resources related to your Founders Agreement.
+          </p>
+        </div>
+        <div class="cards-grid" id="documentationList"></div>
+      </section>
+
+
+      <!-- ===== PAIN POINT DETAIL ===== -->
+      <section class="view-section" id="view-painpoint">
+        <div class="back-nav" id="backToDashboard" data-i18n="backToDashboard">← Back to Dashboard</div>
+        <div class="page-header" id="ppDetailHeader"></div>
+        <div class="flex-between mb-2">
+          <div></div>
+          <div style="display: flex; align-items: center; gap: 10px;">
+            <label id="ppStatusLabel" style="font-size:0.78rem;color:var(--text-muted);"
+              data-i18n="statusLabel">Status:</label>
+            <select class="status-select" id="ppStatusSelect"></select>
+          </div>
+        </div>
+        <div id="ppQuestions"></div>
+        <div id="ppRelatedDocs" style="margin-top: 32px;"></div>
+      </section>
+
+      <!-- ===== DOCUMENTS ===== -->
+      <section class="view-section" id="view-documents">
+        <div class="page-header flex-between">
+          <div>
+            <h2 data-i18n="documentsTitle">Evidence Documents</h2>
+            <p data-i18n="documentsDesc">Your legal proof that the draft is factually incorrect and legally dangerous.
+              Track which lawyers have reviewed each document.</p>
+          </div>
+          <button class="btn btn-primary" id="addDocBtn" data-i18n="addDocBtn">+ Add Document</button>
+        </div>
+        <div class="doc-list" id="docList"></div>
+      </section>
+
+      <!-- ===== COMPARE ===== -->
+      <section class="view-section" id="view-compare">
+        <div class="page-header">
+          <h2 data-i18n="compareTitle">Compare Answers</h2>
+          <p data-i18n="compareDesc">Side-by-side comparison of all lawyers' responses for each question. Identify
+            consensus and disagreements.</p>
+        </div>
+        <div class="form-group" style="max-width:320px; margin-bottom:24px;">
+          <label data-i18n="filterByPainPoint">Filter by Pain Point</label>
+          <select class="status-select" id="compareFilter" style="width:100%;padding-right:30px;">
+            <option value="all" data-i18n="allQuestions">All Questions</option>
+          </select>
+        </div>
+        <div class="compare-container" id="compareContainer"></div>
+      </section>
+
+
+    </main>
+  </div>
+
+  <!-- ===== MODAL: Add/Edit Lawyer ===== -->
+  <div class="modal-overlay" id="lawyerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="lawyerModalTitle" data-i18n="addLawyerTitle">Add Lawyer</h3>
+        <button class="modal-close" id="closeLawyerModal">✕</button>
+      </div>
+      <form id="lawyerForm">
+        <input type="hidden" id="lawyerEditId">
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="labelFullName">Full Name *</label>
+            <input type="text" id="lawyerName" required>
+          </div>
+          <div class="form-group">
+            <label data-i18n="labelFirm">Firm / Organization</label>
+            <input type="text" id="lawyerFirm">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="labelSpecialization">Specialization</label>
+            <input type="text" id="lawyerSpec" data-i18n-placeholder="placeholderSpec"
+              placeholder="e.g. Corporate Law, KSA Companies Law">
+          </div>
+          <div class="form-group">
+            <label data-i18n="labelConsultDate">Consultation Date</label>
+            <input type="date" id="lawyerDate">
+          </div>
+        </div>
+        <div class="form-row">
+          <div class="form-group">
+            <label data-i18n="labelPhone">Phone</label>
+            <input type="tel" id="lawyerPhone">
+          </div>
+          <div class="form-group">
+            <label data-i18n="labelEmail">Email</label>
+            <input type="email" id="lawyerEmail">
+          </div>
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelNotes">Notes</label>
+          <textarea id="lawyerNotes" data-i18n-placeholder="placeholderNotes"
+            placeholder="e.g. Referred by Monsha'at, specializes in partner disputes..."></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelLawyer" data-i18n="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" id="saveLawyerBtn" data-i18n="saveLawyerBtn">Save
+            Lawyer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Add Answer ===== -->
+  <div class="modal-overlay" id="answerModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="answerModalTitle" data-i18n="answerModalTitle">Record Lawyer's Answer</h3>
+        <button class="modal-close" id="closeAnswerModal">✕</button>
+      </div>
+      <form id="answerForm">
+        <input type="hidden" id="answerQuestionId">
+        <input type="hidden" id="answerEditIdx">
+        <div class="form-group">
+          <label data-i18n="labelQuestion">Question</label>
+          <p id="answerQuestionText" style="color:var(--text-primary);font-size:0.88rem;line-height:1.5;"></p>
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelSelectLawyer">Select Lawyer *</label>
+          <select id="answerLawyer" required></select>
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelLawyerAnswer">Lawyer's Answer *</label>
+          <textarea id="answerText" required data-i18n-placeholder="placeholderAnswer"
+            placeholder="Record the lawyer's response here..."></textarea>
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelRecommendation">Recommendation</label>
+          <select id="answerRecommendation">
+            <option value="" data-i18n="selectDefault">— Select —</option>
+            <option value="red-flag" data-i18n="recRedFlag">🔴 Red Flag / Non-Standard</option>
+            <option value="caution" data-i18n="recCaution">🟡 Caution / Needs Modification</option>
+            <option value="safe" data-i18n="recSafe">🟢 Acceptable / Standard</option>
+          </select>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelAnswer" data-i18n="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-i18n="saveAnswerBtn">Save Answer</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Add Document ===== -->
+  <div class="modal-overlay" id="docModal">
+    <div class="modal">
+      <div class="modal-header">
+        <h3 id="docModalTitle" data-i18n="addDocTitle">Add Document</h3>
+        <button class="modal-close" id="closeDocModal">✕</button>
+      </div>
+      <form id="docForm">
+        <input type="hidden" id="docEditId">
+        <div class="form-group">
+          <label data-i18n="labelDocName">Document Name *</label>
+          <input type="text" id="docName" required data-i18n-placeholder="placeholderDocName"
+            placeholder="e.g. Employment Contract">
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelFileName">File Name</label>
+          <input type="text" id="docFileName" data-i18n-placeholder="placeholderFileName"
+            placeholder="e.g. employment_contract.pdf">
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelDescription">Description</label>
+          <textarea id="docDesc" data-i18n-placeholder="placeholderDocDesc"
+            placeholder="What this document proves and what section to show the lawyer..."></textarea>
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelKeySection">Key Section</label>
+          <input type="text" id="docSection" data-i18n-placeholder="placeholderKeySection"
+            placeholder="e.g. Article 6 (Capital)">
+        </div>
+        <div class="form-group">
+          <label data-i18n="labelQuestionToAsk">Question to Ask</label>
+          <textarea id="docQuestion" data-i18n-placeholder="placeholderQuestionToAsk"
+            placeholder="What question should you ask the lawyer about this document?"></textarea>
+        </div>
+        <div class="form-actions">
+          <button type="button" class="btn btn-secondary" id="cancelDoc" data-i18n="cancelBtn">Cancel</button>
+          <button type="submit" class="btn btn-primary" data-i18n="saveDocBtn">Save Document</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: View Content ===== -->
+  <div class="modal-overlay" id="contentModal">
+    <div class="modal modal-lg" style="max-width: 800px; width: 90%;">
+      <div class="modal-header">
+        <h3 id="contentModalTitle">Document View</h3>
+        <button class="modal-close" id="closeContentModal">✕</button>
+      </div>
+      <div class="modal-body" id="contentModalBody"
+        style="max-height: 70vh; overflow-y: auto; white-space: pre-wrap; font-family: monospace; font-size: 0.9rem; line-height: 1.5;">
+      </div>
+    </div>
+  </div>
+
+  <!-- ===== MODAL: Auth (Login/Signup) ===== -->
+  <div class="modal-overlay" id="authModal"
+    style="display: none; align-items: center; justify-content: center; z-index: 2000;">
+    <div class="modal" style="max-width: 400px; width: 90%;">
+      <div class="modal-header">
+        <h3 id="authModalTitle">Login</h3>
+      </div>
+      <form id="authForm">
+        <div class="form-group">
+          <label>Email</label>
+          <input type="email" id="authEmail" required>
+        </div>
+        <div class="form-group">
+          <label>Password</label>
+          <input type="password" id="authPassword" required>
+        </div>
+        <div id="authError" style="color: #ff4d4d; font-size: 0.8rem; margin-bottom: 15px; display: none;"></div>
+        <div class="form-actions" style="flex-direction: column; gap: 10px;">
+          <button type="submit" class="btn btn-primary" style="width: 100%;" id="authSubmitBtn">Login</button>
+          <button type="button" class="btn btn-secondary"
+            style="width: 100%; border: none; background: transparent; color: var(--accent-blue); cursor: pointer;"
+            id="toggleAuthMode">Need an account? Sign Up</button>
+        </div>
+      </form>
+    </div>
+  </div>
+
+  <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2"></script>
+  <script src="supabase-config.js"></script>
+  <script src="auth.js"></script>
+  <script src="data.js"></script>
+  <script src="app.js"></script>
+</body>
+
+</html>

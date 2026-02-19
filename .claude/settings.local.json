@@ -1,0 +1,13 @@
+{
+  "permissions": {
+    "allow": [
+      "Bash(dir:*)",
+      "Bash(cmd /c \"type \"\"%APPDATA%\\Claude\\claude_desktop_config.json\"\"\")",
+      "Bash(cmd /c:*)",
+      "Read(//c/Users/david/.claude/**)",
+      "Read(//c/Users/david/AppData/Roaming/Claude/**)"
+    ],
+    "deny": [],
+    "ask": []
+  }
+}
