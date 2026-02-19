@@ -1,5 +1,4 @@
-
-window.notebookSources = [
+export const notebookSources = [
     {
         id: "32514f64-70fe-4089-9aec-ad2cf0203aa8",
         title: "Amendment to Founders Agreement 08Jan26.pdf",
